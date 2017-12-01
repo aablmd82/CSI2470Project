@@ -1,9 +1,6 @@
 # client.py ver 1.0.0
 # 12/1/2017 Sean Dallas
 
-import socket
-import sys
-
 import socket                   # Import socket module
 
 s = socket.socket()             # Create a socket object

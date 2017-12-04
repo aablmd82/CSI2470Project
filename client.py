@@ -10,7 +10,7 @@ port = 60000                    # Reserve a port for your service.
 s.connect((host, port))
 s.send(("Hello server!").encode())
 
-def transfer(str image):
+def transfer(image):
         s.send((image).encode())
 ##with open('received_file', 'wb') as f:
 ##    print ("file opened")

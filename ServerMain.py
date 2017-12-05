@@ -5,22 +5,38 @@ import cv2
 import numpy
 import ImageProcessing
 import emailer
+import time
+
+
+email_timeout = 30
+time_last_email_sent = 0
 
 
 def process_image(image):
+    global time_last_email_sent
+
     faces = ImageProcessing.detect_faces(image)
     print("Processed image.")
     if len(faces) > 0:
-        print("Sending email.")
-        encoded_img = cv2.imencode(".png", image)[1]
-        stream = io.BytesIO()
-        stream.write(encoded_img)
-        stream.seek(0)
-        emailer.sendMail(
-            ["brian.semrau@gmail.com"],
-            "Faces Detected on Camera",
-            "",
-            [(stream, "detected_faces.png")])
+        current = time.time()
+        if current - time_last_email_sent < email_timeout:
+            print("Email timeout in effect %.1f." % (current - time_last_email_sent))
+        else:
+            print("Sending email.")
+            send_email(image)
+            time_last_email_sent = current
+
+
+def send_email(image):
+    encoded_img = cv2.imencode(".png", image)[1]
+    stream = io.BytesIO()
+    stream.write(encoded_img)
+    stream.seek(0)
+    emailer.sendMail(
+        ["brian.semrau@gmail.com"],
+        "Faces Detected on Camera",
+        "",
+        [(stream, "detected_faces.png")])
 
 
 soc = socket.socket()

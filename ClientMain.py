@@ -5,7 +5,7 @@ import time
 import picamera
 
 soc = socket.socket()
-soc.connect(("hostname", 42069))
+soc.connect(("GamingMachine", 42069))
 
 connection = soc.makefile('wb')
 try:

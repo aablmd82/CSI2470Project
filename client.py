@@ -28,10 +28,6 @@ class ClientProtocol:
         self.socket.sendall(length)
         self.socket.sendall(image_data)
 
-        # ack = self.socket.recv(1) decided not to receive this cause
-        # i don't think it is needed for our purposes (i disabled it on both ends)
-
-        #could handle a bad ack here, but we'll assume it's fine.
 
 if __name__ == '__main__':
     cp = ClientProtocol()

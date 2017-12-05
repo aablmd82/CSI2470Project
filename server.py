@@ -1,7 +1,6 @@
 # server.py ver 1.0.0
 # 12/1/2017 Sean Dallas
-from os import *
-from socket import *                   # Import socket module ABLEMIND
+from socket import *
 from struct import unpack
 
 
@@ -9,15 +8,13 @@ class Server:
 
     def __init__(self):
         self.socket = None
-        self.output_dir = '.'
-        self.file_num = 1
 
     def listen(self, server_ip, server_port):
         self.socket = socket(AF_INET, SOCK_STREAM)
         self.socket.bind((server_ip, server_port))
         self.socket.listen(1)
 
-    def handle_images(self):
+    def retrieve_data(self, listener):
 
         try:
             while True:
@@ -33,36 +30,18 @@ class Server:
                         data += connection.recv(
                             4096 if to_read > 4096 else to_read)
 
-                    # send our 0 ack
-                    #assert len(b'\00') == 1
-                    #connection.sendall(b'\00')  i don't think this assert is needed
                 finally:
                     connection.shutdown(SHUT_WR)
                     connection.close()
 
-                with open(os.path.join(
-                        self.output_dir, '%06d.jpg' % self.file_num), 'w'
-                ) as fp:
-                    fp.write(data)
+                listener(data)
 
-                self.file_num += 1
         finally:
             self.close()
 
     def close(self):
         self.socket.close()
         self.socket = None
-
-
-     # could handle a bad ack here, but we'll assume it's fine.
-
-if __name__ == '__main__':
-    sp = Server()
-    sp.listen('127.0.0.1', 55555)
-    sp.handle_images()
-
-
-
 
 
 ##

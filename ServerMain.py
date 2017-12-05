@@ -2,10 +2,14 @@ import ImageProcessing
 import emailer
 import cv2
 import socket
+import numpy
 from server import Server
 
 
-def process_image(image):
+def process_image(data):
+    image = numpy.load(data)
+    cv2.imshow("test", image)
+    cv2.waitKey(0)
     faces = ImageProcessing.detect_faces(image)
     print("Processed image.")
     if len(faces) > 0:
@@ -16,6 +20,8 @@ def process_image(image):
 
 if __name__ == '__main__':
     server = Server()
-    server.listen(socket.gethostbyname(socket.gethostname()), 42069)
-    print("Server listening.")
+    ip = "169.254.207.37"  # socket.gethostbyname(socket.gethostname())
+    port = 42069
+    server.listen(ip, port)
+    print("Server listening on {}:{}".format(ip, port))
     server.retrieve_data(process_image)

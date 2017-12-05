@@ -2,6 +2,7 @@
 # 12/1/2017 Sean Dallas
 from socket import *
 from struct import unpack
+import io
 
 
 class Server:
@@ -22,7 +23,7 @@ class Server:
                 try:
                     bs = connection.recv(8)
                     (length,) = unpack('>Q', bs)
-                    data = b''
+                    data = ''
                     while len(data) < length:
                         # doing it in batches is generally better than trying
                         # to do it all in one go, so I believe.
@@ -34,7 +35,8 @@ class Server:
                     connection.shutdown(SHUT_WR)
                     connection.close()
 
-                listener(data)
+                f = io.BytesIO(data)
+                listener(f)
 
         finally:
             self.close()

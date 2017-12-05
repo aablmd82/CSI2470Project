@@ -3,6 +3,7 @@
 
 from socket import *
 from struct import pack
+import numpy
 
 
 class ClientProtocol:
@@ -19,14 +20,19 @@ class ClientProtocol:
         self.socket.close()
         self.socket = None
 
-    def send_image(self, image_data):
+    def send_image(self, image):
+
+        f = io.StringIO()
+        numpy.savez_compressed(f, frame=image)
+        f.seek(0)
+        out = f.read()
 
         # use struct to make sure we have a consistent endianness on the length
-        length = pack('>Q', len(image_data))
+        length = pack('>Q', len(out))
 
         # sendall to make sure it blocks if there's back-pressure on the socket
         self.socket.sendall(length)
-        self.socket.sendall(image_data)
+        self.socket.sendall(out)
 
 
 if __name__ == '__main__':

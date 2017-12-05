@@ -7,8 +7,9 @@ from email.utils import COMMASPACE, formatdate
 from email.encoders import *
 import os
 
-USERNAME = "mkrajcevx74@gmail.com@gmail.com"
-PASSWORD = "mwvjfkkedemyqgjx"
+
+with open("emailauth.txt") as f:
+    (USERNAME, PASSWORD) = f.readlines()
 
 
 def sendMail(to, subject, text, files=[]):

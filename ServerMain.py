@@ -16,7 +16,11 @@ def process_image(image):
         stream = io.BytesIO()
         stream.write(encoded_img)
         stream.seek(0)
-        emailer.sendMail(["brian.semrau@gmail.com"], "Test Server Msg", "This is the content", [stream])
+        emailer.sendMail(
+            ["brian.semrau@gmail.com"],
+            "Faces Detected on Camera",
+            "",
+            [(stream, "detected_faces.png")])
 
 
 soc = socket.socket()

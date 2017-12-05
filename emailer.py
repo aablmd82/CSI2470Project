@@ -32,10 +32,10 @@ def sendMail(to, subject, text, files=[]):
             part.add_header('Content-Disposition', 'attachment; filename="%s"'
                             % os.path.basename(file))
         else:
-            part.set_payload(file.read())
+            part.set_payload(file[0].read())
             encode_base64(part)
             part.add_header('Content-Disposition', 'attachment; filename="%s"'
-                            % "file")
+                            % file[1])
 
         msg.attach(part)
 

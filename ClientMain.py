@@ -1,28 +1,29 @@
-from picamera.array import PiRGBArray
-from picamera import PiCamera
+import io
+import socket
+import struct
 import time
-import cv2
-from client import ClientProtocol
+import picamera
 
-if __name__ == '__main__':
-    cam = PiCamera()
-    cam.resolution = (240, 360)
-    cam.framerate = 32
-    raw_capture = PiRGBArray(cam, size=(240, 368))
-    print("Created camera.")
+soc = socket.socket()
+soc.connect(("hostname", 42069))
 
-    client = ClientProtocol()
-    client.connect("169.254.207.37", 42069)  # TODO find server IP
-    print("Connected to server.")
+connection = soc.makefile('wb')
+try:
+    with picamera.PiCamera() as camera:
+        camera.resolution = (240, 368)
+        camera.start_preview()
+        time.sleep(1)
 
-    time.sleep(0.1)
+        stream = io.BytesIO()
+        for frame in camera.capture_continuous(stream, 'jpeg'):
+            connection.write(struct.pack('<L', stream.tell()))
+            connection.flush()
+            stream.seek(0)
+            connection.write(stream.read())
 
-    for frame in cam.capture_continuous(raw_capture, format='bgr', use_video_port=True):
-        image = frame.array
-        # scaled = cv2.resize(image, (240, int(240. * image.shape[0] / image.shape[1])))
-        # send image over TCP
-        client.send_image(image)
-        print("Sent image.")
-
-        time.sleep(10)
-        raw_capture.truncate(0)
+            stream.seek(0)
+            stream.truncate()
+    connection.write(struct.pack('<L', 0))
+finally:
+    connection.close()
+    soc.close()

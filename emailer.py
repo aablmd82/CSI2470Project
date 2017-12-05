@@ -38,10 +38,10 @@ def sendMail(to, subject, text, files=[]):
 
         msg.attach(part)
 
-    server = smtplib.SMTP('smtp.gmail.com:587')
-    server.ehlo_or_helo_if_needed()
-    server.starttls()
-    server.ehlo_or_helo_if_needed()
+    server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=30)
+    # server.ehlo_or_helo_if_needed()
+    # server.starttls()
+    # server.ehlo_or_helo_if_needed()
     server.login(USERNAME, PASSWORD)
     server.sendmail(USERNAME, to, msg.as_string())
     server.quit()

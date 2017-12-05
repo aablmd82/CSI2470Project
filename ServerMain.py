@@ -2,6 +2,7 @@ import io
 import socket
 import struct
 import cv2
+import numpy
 import ImageProcessing
 import emailer
 
@@ -29,7 +30,7 @@ try:
         stream = io.BytesIO()
         stream.write(connection.read(length))
         stream.seek(0)
-        image = cv2.imdecode(stream, 1)
+        image = cv2.imdecode(numpy.asarray(stream.read()), 1)
 
         process_image(image)
 finally:

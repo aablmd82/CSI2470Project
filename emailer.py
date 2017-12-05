@@ -25,10 +25,17 @@ def sendMail(to, subject, text, files=[]):
 
     for file in files:
         part = MIMEBase('application', "octet-stream")
-        part.set_payload(file.read())
-        encode_base64(part)
-        part.add_header('Content-Disposition', 'attachment; filename="%s"'
-                        % os.path.basename(file))
+        if file is str:
+            part.set_payload(open(file, "rb").read())
+            encode_base64(part)
+            part.add_header('Content-Disposition', 'attachment; filename="%s"'
+                            % os.path.basename(file))
+        else:
+            part.set_payload(file.read())
+            encode_base64(part)
+            part.add_header('Content-Disposition', 'attachment; filename="%s"'
+                            % "file")
+
         msg.attach(part)
 
     server = smtplib.SMTP('smtp.gmail.com:587')

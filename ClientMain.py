@@ -9,9 +9,11 @@ if __name__ == '__main__':
     cam.resolution = (240, 360)
     cam.framerate = 32
     raw_capture = PiRGBArray(cam, size=(240, 368))
+    print("Created camera.")
 
     client = ClientProtocol()
     client.connect("169.254.207.37", 42069)  # TODO find server IP
+    print("Connected to server.")
 
     time.sleep(0.1)
 
@@ -20,6 +22,7 @@ if __name__ == '__main__':
         # scaled = cv2.resize(image, (240, int(240. * image.shape[0] / image.shape[1])))
         # send image over TCP
         client.send_image(image)
+        print("Sent image.")
 
         time.sleep(10)
         raw_capture.truncate(0)

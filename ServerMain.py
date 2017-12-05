@@ -12,8 +12,11 @@ def process_image(image):
     print("Processed image.")
     if len(faces) > 0:
         print("Sending email.")
-        _, encoded_img = cv2.imencode(".png", image)
-        emailer.sendMail(["brian.semrau@gmail.com"], "Test Server Msg", "This is the content", [encoded_img])
+        encoded_img = cv2.imencode(".png", image)[1]
+        stream = io.BytesIO()
+        stream.write(encoded_img)
+        stream.seek(0)
+        emailer.sendMail(["brian.semrau@gmail.com"], "Test Server Msg", "This is the content", [stream])
 
 
 soc = socket.socket()
